@@ -5,6 +5,8 @@ import {
   Fingerprint,
   ShieldCheck,
   Github,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
@@ -146,6 +148,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   formdata,
   isLoading
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 lg:p-12 bg-slate-950 overflow-y-auto min-h-screen">
       <div className="w-full max-w-md space-y-8">
@@ -236,18 +240,27 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 </a>
               </div>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formdata.password}
                 autoComplete="current-password"
                 required
                 placeholder="••••••••"
                 onChange={(e)=> handlePasswordChange(e)}
-                className="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-300 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 transition-shadow focus:outline-none"
+                className="block w-full rounded-lg border-0 py-2.5 px-3 pr-11 text-slate-300 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 transition-shadow focus:outline-none"
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 transition-colors hover:text-slate-300"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
           </div>
           

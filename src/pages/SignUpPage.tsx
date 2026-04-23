@@ -6,6 +6,10 @@ import {
   ArrowRight,
   FileText,
   Activity,
+  Check,
+  CircleAlert,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 import React, { useState, useContext } from "react";
@@ -23,6 +27,88 @@ type SignUpFormProps = {
     fullname: string;
   };
   isLoading: boolean;
+  error: string;
+  passwordStrength: PasswordStrength;
+};
+
+type PasswordCheck = {
+  label: string;
+  met: boolean;
+};
+
+type PasswordStrength = {
+  score: number;
+  label: string;
+  helperText: string;
+  toneClassName: string;
+  barClassName: string;
+  isValid: boolean;
+  checks: PasswordCheck[];
+};
+
+const getPasswordStrength = (password: string): PasswordStrength => {
+  const checks: PasswordCheck[] = [
+    { label: "8+ characters", met: password.length >= 8 },
+    { label: "1 letter", met: /[A-Za-z]/.test(password) },
+    { label: "1 number", met: /\d/.test(password) },
+    { label: "1 special character", met: /[^A-Za-z0-9\s]/.test(password) },
+  ];
+
+  const score = checks.filter((check) => check.met).length;
+  const isValid = checks.every((check) => check.met);
+
+  if (!password) {
+    return {
+      score: 0,
+      label: "Start typing",
+      helperText:
+        "Use at least 8 characters with letters, numbers, and a special character.",
+      toneClassName: "text-slate-500",
+      barClassName: "bg-slate-800",
+      isValid,
+      checks,
+    };
+  }
+
+  if (score <= 2) {
+    return {
+      score,
+      label: "Weak",
+      helperText: `Missing: ${checks
+        .filter((check) => !check.met)
+        .map((check) => check.label)
+        .join(", ")}.`,
+      toneClassName: "text-red-400",
+      barClassName: "bg-red-500/80",
+      isValid,
+      checks,
+    };
+  }
+
+  if (score === 3) {
+    return {
+      score,
+      label: "Medium",
+      helperText: `Add ${checks
+        .filter((check) => !check.met)
+        .map((check) => check.label)
+        .join(", ")} for a valid password.`,
+      toneClassName: "text-amber-400",
+      barClassName: "bg-amber-500/80",
+      isValid,
+      checks,
+    };
+  }
+
+  return {
+    score,
+    label: "Strong",
+    helperText: "Password meets the signup requirements.",
+    toneClassName: "text-emerald-400",
+    barClassName: "bg-emerald-500/80",
+    isValid,
+    checks,
+  };
 };
 
 const BrandingPanel = () => {
@@ -172,7 +258,11 @@ const SignupForm: React.FC<SignUpFormProps> = ({
   formdata,
   isLoading,
   handleFullnameChange,
+  error,
+  passwordStrength,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="flex w-full flex-col justify-center p-8 lg:w-1/2 relative bg-slate-950 min-h-screen">
       <div className="lg:hidden absolute top-6 left-6 flex items-center gap-2 text-white">
@@ -270,37 +360,99 @@ const SignupForm: React.FC<SignUpFormProps> = ({
               </label>
               <div className="relative">
                 <input
-                  className="flex h-10 w-full rounded-md border border-slate-700 bg-slate-900/50 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all disabled:cursor-not-allowed disabled:opacity-50 pr-10"
+                  className="flex h-10 w-full rounded-md border border-slate-700 bg-slate-900/50 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all disabled:cursor-not-allowed disabled:opacity-50 pr-11"
                   id="password"
                   name="password"
                   required
                   value={formdata.password}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  minLength={8}
+                  autoComplete="new-password"
+                  aria-invalid={!passwordStrength.isValid && formdata.password.length > 0}
                   onChange={(e) => handlePasswordChange(e)}
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-500">
-                  <Lock size={16} />
-                </div>
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 transition-colors hover:text-slate-300"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
 
             {/* Password Strength */}
             <div className="space-y-2 pt-1">
-              <div className="flex gap-1 h-1 w-full overflow-hidden rounded-full bg-slate-800">
-                <div className="w-1/4 bg-red-500/80"></div>
-                <div className="w-1/4 bg-slate-800"></div>
-                <div className="w-1/4 bg-slate-800"></div>
-                <div className="w-1/4 bg-slate-800"></div>
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] uppercase tracking-wider text-slate-500 ml-0.5">
+                  Password strength
+                </p>
+                <p
+                  className={`text-[11px] font-semibold ${passwordStrength.toneClassName}`}
+                >
+                  {passwordStrength.label}
+                </p>
               </div>
-              <p className="text-[11px] text-slate-500 ml-0.5">
-                Password must be at least 8 characters
+              <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                {Array.from({ length: 4 }, (_, index) => (
+                  <div
+                    key={index}
+                    className={`h-full flex-1 rounded-full transition-colors duration-200 ${
+                      index < passwordStrength.score
+                        ? passwordStrength.barClassName
+                        : "bg-slate-800"
+                    }`}
+                  />
+                ))}
+              </div>
+              <p
+                className={`text-[11px] ml-0.5 ${
+                  passwordStrength.isValid ? "text-emerald-400" : "text-slate-500"
+                }`}
+              >
+                {passwordStrength.helperText}
               </p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                {passwordStrength.checks.map((check) => (
+                  <div
+                    key={check.label}
+                    className={`flex items-center gap-1.5 text-[11px] ${
+                      check.met ? "text-emerald-400" : "text-slate-500"
+                    }`}
+                  >
+                    <span
+                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
+                        check.met
+                          ? "border-emerald-500/40 bg-emerald-500/10"
+                          : "border-slate-700 bg-slate-900"
+                      }`}
+                    >
+                      {check.met ? (
+                        <Check size={10} />
+                      ) : (
+                        <span className="h-1.5 w-1.5 rounded-full bg-slate-600"></span>
+                      )}
+                    </span>
+                    <span>{check.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {error && (
+              <div className="flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+                <CircleAlert className="mt-0.5 shrink-0" size={16} />
+                <span>{error}</span>
+              </div>
+            )}
 
             {isLoading && <LoadingSpinner />}
             <button
-              className="w-full text-white bg-blue-600 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-500/30 font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-200 flex items-center justify-center gap-2 group mt-4 shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]"
+              className="w-full text-white bg-blue-600 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-500/30 font-semibold rounded-lg text-sm px-5 py-2.5 text-center transition-all duration-200 flex items-center justify-center gap-2 group mt-4 shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] disabled:cursor-not-allowed disabled:opacity-60"
               type="submit"
+              disabled={isLoading}
             >
               Create Account
               <ArrowRight
@@ -310,23 +462,6 @@ const SignupForm: React.FC<SignUpFormProps> = ({
             </button>
           </form>
 
-          <p className="px-8 text-center text-xs text-slate-500">
-            By clicking continue, you agree to our{" "}
-            <a
-              className="underline underline-offset-4 hover:text-blue-500 transition-colors"
-              href="#"
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              className="underline underline-offset-4 hover:text-blue-500 transition-colors"
-              href="#"
-            >
-              Privacy Policy
-            </a>
-            .
-          </p>
         </div>
       </div>
     </div>
@@ -337,26 +472,41 @@ const SignUpPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    fullname : ""
+    fullname: "",
   });
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(AuthContext);
+  const passwordStrength = getPasswordStrength(formData.password);
 
   if (!context) {
     throw new Error("LoginPage must be used within an AuthProvider");
   }
   const { register } = context;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submit", formData);
+
+    if (!passwordStrength.isValid) {
+      setError(
+        "Password must be at least 8 characters and include a letter, a number, and a special character.",
+      );
+      return;
+    }
+
+    setError("");
     setIsLoading(true);
     try {
-      await register(formData.fullname,formData.fullname,formData.email, formData.password);
-    } catch (e: any) {
+      await register(
+        formData.fullname,
+        formData.fullname,
+        formData.email,
+        formData.password,
+      );
+    } catch (e: unknown) {
       console.error(e);
+      setError(e instanceof Error ? e.message : "Unable to create your account.");
     } finally {
       setIsLoading(false);
     }
@@ -405,6 +555,8 @@ const SignUpPage = () => {
         handlePasswordChange={handlePasswordChange}
         isLoading={isLoading}
         formdata={formData}
+        error={error}
+        passwordStrength={passwordStrength}
       />
     </div>
   );
