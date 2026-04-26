@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Search,
   Filter,
   Plus,
   Webhook,
@@ -55,30 +54,6 @@ const normalizeProject = (project: DashboardProject): DashboardProject => ({
   })),
   totalSecrets: project.totalSecrets ?? 0,
 });
-
-const Header = () => {
-  return (
-    <header className="h-16 flex items-center justify-between px-6 border-b  border-[#30363d] bg-[#161b22] sticky top-0 z-20">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="relative w-full max-w-md">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search size={18} className="text-slate-500" />
-          </span>
-          <input
-            type="text"
-            className="block w-full pl-10 pr-12 py-2 border border-slate-800 rounded-lg leading-5 bg-[#161b22] text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
-            placeholder="Search projects..."
-          />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-slate-500 text-xs border border-slate-700 rounded px-1.5 py-0.5 font-mono">
-              ⌘K
-            </span>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-};
 
 const Dashboard = () => {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
@@ -167,8 +142,6 @@ const Dashboard = () => {
   return (
     <div className="flex h-screen overflow-hidden bg-[#0f111a] text-slate-50 font-sans selection:bg-blue-500/30">
       <main className="flex-1 flex flex-col min-w-0 bg-[#0f111a] relative">
-        <Header />
-
         <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-white mb-2 tracking-tight">

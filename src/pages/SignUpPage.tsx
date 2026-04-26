@@ -1,5 +1,4 @@
 import {
-  Terminal,
   Key,
   Lock,
   Github,
@@ -15,6 +14,7 @@ import {
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import LoadingSpinner from "../utils/LoadingSpinner";
+import AppLogo from "../components/AppLogo";
 
 type SignUpFormProps = {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -122,9 +122,7 @@ const BrandingPanel = () => {
 
       {/* Header */}
       <div className="relative z-20 flex items-center gap-2 text-lg font-bold tracking-tight">
-        <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500 shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)]">
-          <Terminal size={20} />
-        </div>
+        <AppLogo className="h-8 w-8" />
         EnvVault
       </div>
 
@@ -266,9 +264,7 @@ const SignupForm: React.FC<SignUpFormProps> = ({
   return (
     <div className="flex w-full flex-col justify-center p-8 lg:w-1/2 relative bg-slate-950 min-h-screen">
       <div className="lg:hidden absolute top-6 left-6 flex items-center gap-2 text-white">
-        <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500">
-          <Terminal size={18} />
-        </div>
+        <AppLogo className="h-8 w-8" />
         <span className="font-bold tracking-tight">EnvVault</span>
       </div>
 

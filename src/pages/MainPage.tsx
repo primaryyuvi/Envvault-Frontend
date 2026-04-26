@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import {
-  Shield,
   LayoutDashboard,
   FolderOpen,
   Users,
@@ -15,6 +14,7 @@ import Projects from "./Projects";
 import SettingsPage from "./SettingsPage";
 import { AuthContext } from "../contexts/AuthContext";
 import { Team } from "./Team";
+import AppLogo from "../components/AppLogo";
 
 type ViewState = "dashboard" | "projects" | "settings" | "teams";
 
@@ -65,9 +65,7 @@ const SidebarContent = ({
   <>
     <div className="h-16 flex items-center px-6 border-b border-[#30363d]">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-indigo-500/20 border border-indigo-500/30 rounded-lg flex items-center justify-center text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-          <Shield size={20} />
-        </div>
+        <AppLogo className="h-8 w-8" />
         <span className="font-bold text-lg tracking-tight text-white">
           EnvVault
         </span>

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Menu, 
   X, 
-  Terminal, 
   ExternalLink, 
   Copy, 
   Check, 
@@ -20,6 +19,7 @@ import {
   Linkedin, 
   Loader2 
 } from 'lucide-react';
+import AppLogo from '../components/AppLogo';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,9 +40,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-500 shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)]">
-              <Terminal size={20} />
-            </div>
+            <AppLogo className="h-8 w-8" />
             <span className="font-bold text-lg tracking-tight text-white">EnvVault</span>
           </div>
           
@@ -368,6 +366,7 @@ const Footer = () => {
     <footer className="border-t border-slate-800 py-8 bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2">
+          <AppLogo className="h-6 w-6" />
           <span className="font-bold text-sm text-slate-300">EnvVault</span>
         </div>
         <div className="flex gap-6">

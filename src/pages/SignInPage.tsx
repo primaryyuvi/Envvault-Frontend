@@ -1,5 +1,4 @@
 import {
-  Terminal,
   Key,
   Lock,
   Fingerprint,
@@ -11,6 +10,7 @@ import {
 import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import LoadingSpinner from "../utils/LoadingSpinner";
+import AppLogo from "../components/AppLogo";
 
 type LoginFormProps = {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -39,9 +39,7 @@ const BrandingPanel = () => {
           className="flex items-center gap-2 hover:opacity-80 transition-opacity w-fit"
           href="/"
         >
-          <div className="w-10 h-10 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400">
-            <Terminal size={24} />
-          </div>
+          <AppLogo className="h-10 w-10" />
           <span className="font-bold text-xl tracking-tight text-white">
             EnvVault
           </span>
@@ -155,9 +153,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       <div className="w-full max-w-md space-y-8">
         <div className="lg:hidden flex justify-center mb-8">
           <a className="flex items-center gap-2" href="#">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-              <Terminal size={24} />
-            </div>
+            <AppLogo className="h-10 w-10" />
             <span className="font-bold text-xl tracking-tight text-white">
               EnvVault
             </span>
