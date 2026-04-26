@@ -45,41 +45,6 @@ import { resolveAuditActivityContent } from "../utils/auditActivity";
 import type { EnvironmentValues } from "../types/environment";
 import type { OwnedProject } from "../types/team";
 
-// type Secret = {
-//   id: string;
-//   key: string;
-//   value: string;
-//   version: number;
-//   lastUpdated: string;
-//   env: string;
-// };
-
-// const INITIAL_SECRETS: Secret[] = [
-//   {
-//     id: "1",
-//     key: "NEXT_PUBLIC_API_URL",
-//     value: "https://api.example.com",
-//     version: 2,
-//     lastUpdated: "Updated 2 days ago",
-//     env: "production",
-//   },
-//   {
-//     id: "2",
-//     key: "NEXT_PUBLIC_SENTRY_DSN",
-//     value: "https://sentry.io/api/123456",
-//     version: 1,
-//     lastUpdated: "Updated 1 week ago",
-//     env: "production",
-//   },
-//   {
-//     id: "3",
-//     key: "DATABASE_PASSWORD",
-//     value: "super_secret_password_123",
-//     version: 5,
-//     lastUpdated: "Updated 1 week ago",
-//     env: "production",
-//   },
-// ];
 type SecretRow = {
   id: string;
   keyName: string | undefined;
